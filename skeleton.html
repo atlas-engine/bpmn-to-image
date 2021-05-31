@@ -144,6 +144,13 @@
         canvas.viewbox(newViewbox);
       }
 
+      function zoomDiagram(zoomFactor = 1) {
+        const bpmnViewer = getViewer();
+        const canvas = bpmnViewer.get('canvas');
+
+        canvas.zoom(zoomFactor);
+      }
+
       /**
        * Open diagram in our viewer instance.
        *

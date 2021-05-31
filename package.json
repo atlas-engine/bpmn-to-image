@@ -26,6 +26,7 @@
     "svg"
   ],
   "author": "Nico Rehwaldt <https://github.com/nikku>",
+  "contributors": ["Alexander Kasten <https://github.com/alexanderkasten>"],
   "license": "MIT",
   "dependencies": {
     "bpmn-js": "^8.2.0",

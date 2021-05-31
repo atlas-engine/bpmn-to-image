@@ -215,6 +215,21 @@ describe('cli', function() {
       });
     })
 
+    describe('with zoom on diagram', function () {
+
+      it('explicit cli opt-out', async function() {
+
+        // when
+        await runExport([
+          `complex.bpmn${pathDelimiter}zoomed-diagram.png`
+        ], {
+          zoom: 3
+        });
+
+        // then
+        expectExists('zoomed-diagram.png', true);
+      });
+    })
   });
 
 });
@@ -231,6 +246,7 @@ async function runExport(conversions, options = {}) {
     noFooter,
     scale,
     zoomToElement,
+    zoom
   } = options;
 
   if (noFooter) {
@@ -278,6 +294,12 @@ async function runExport(conversions, options = {}) {
     ]
   }
 
+  if (typeof zoom !== 'undefined') {
+    args = [
+      ...args,
+      `--zoom=${zoom}`
+    ]
+  }
   await execa('../cli.js', args, {
     stdout: 'inherit',
     stderr: 'inherit',

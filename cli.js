@@ -36,6 +36,8 @@ const cli = meow(`
 
     --zoom-to-element              Zoom to an Element by its ID
 
+    --zoom                         Diagram zoom factor
+
   Examples
 
     # export to diagram.png
@@ -49,6 +51,9 @@ const cli = meow(`
 
     # export with zoom on Task_0l0q2kz
     $ bpmn-to-image --zoom-to-element=Task_0l0q2kz diagram.bpmn${pathDelimiter}png
+
+    # export with 350% zoom on Task_0l0q2kz
+    $ bpmn-to-image --zoom-to-element=Task_0l0q2kz diagram.bpmn${pathDelimiter}png --zoom 3.5
 `, {
   flags: {
     minDimensions: {
@@ -68,6 +73,8 @@ const cli = meow(`
       type: 'string',
       default: undefined
     },
+    zoom: {
+      default: 1
     }
   }
 });
@@ -117,6 +124,8 @@ const scale = cli.flags.scale !== undefined ? cli.flags.scale : 1;
 
 const zoomToElement = cli.flags.zoomToElement?.trim() !== '' ? cli.flags.zoomToElement : undefined;
 
+const zoom = cli.flags.zoom === true ? 1 : cli.flags.zoom;
+
 const [ width, height ] = cli.flags.minDimensions.split('x').map(function(d) {
   return parseInt(d, 10);
 });
@@ -127,6 +136,7 @@ convertAll(conversions, {
   footer,
   deviceScaleFactor: scale,
   zoomToElement,
+  diagramZoom: zoom
 }).catch(function(e) {
   console.error('failed to export diagram(s)');
   console.error(e);

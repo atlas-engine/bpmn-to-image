@@ -21,6 +21,7 @@ async function printDiagram(page, options) {
     title = true,
     deviceScaleFactor,
     zoomToElement,
+    diagramZoom
   } = options;
 
   const diagramXML = readFileSync(input, 'utf8');
@@ -63,6 +64,12 @@ async function printDiagram(page, options) {
     await page.evaluate((zoomToElement) => {
       zoomToElementById(zoomToElement);
     }, zoomToElement);
+  }
+
+  if (diagramZoom !== 1) {
+    await page.evaluate((diagramZoom) => {
+      zoomDiagram(diagramZoom);
+    }, diagramZoom)
   }
 
   for (const output of outputs) {

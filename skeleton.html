@@ -74,6 +74,83 @@
         return bpmnViewer;
       }
 
+      function getBounds(element, abort = false) {
+        const elements = [element];
+        let minX = null;
+        let minY = null;
+        let maxX = null;
+        let maxY = null;
+        abort = !!abort;
+
+        elements.forEach((element) => {
+          let bbox = element;
+          if (element.waypoints && !abort) {
+            bbox = getBounds(element.waypoints[0], true);
+          }
+
+          let x = bbox.x,
+            y = bbox.y,
+            height = bbox.height || 0,
+            width = bbox.width || 0;
+
+          if (minX == null || x < minX) {
+            minX = x;
+          }
+          if (minY == null || y < minY) {
+            minY = y;
+          }
+
+          if (maxX == null || x + width > maxX) {
+            maxX = x + width;
+          }
+          if (maxY == null || y + height > maxY) {
+            maxY = y + height;
+          }
+        });
+
+        if (minX == null || maxX == null || minY == null || maxY == null) {
+          throw new Error('Could not get bounds');
+        }
+
+        return {
+          x: minX,
+          y: minY,
+          height: maxY - minY,
+          width: maxX - minX,
+        };
+      }
+
+      function zoomToElementById(elementId) {
+        const bpmnViewer = getViewer();
+        const canvas = bpmnViewer.get('canvas');
+        const viewbox = canvas.viewbox(false);
+        const elementRegistry = bpmnViewer.get('elementRegistry');
+        const element = elementRegistry.get(elementId);
+
+        const isDefinitionOrOtherInvisibleBpmnElement = element == null;
+
+        if (isDefinitionOrOtherInvisibleBpmnElement) {
+          throw new Error(`Could not zoom to Element "${elementId}", because it does not exist!`)
+        }
+
+        const rect = getBounds(element);
+        const newViewbox = {
+          x: rect.x + rect.width / 2 - viewbox.outer.width / 2,
+          y: rect.y + rect.height / 2 - viewbox.outer.height / 2,
+          width: viewbox.outer.width,
+          height: viewbox.outer.height,
+        };
+
+        canvas.viewbox(newViewbox);
+      }
+
+      function zoomDiagram(zoomFactor = 1) {
+        const bpmnViewer = getViewer();
+        const canvas = bpmnViewer.get('canvas');
+
+        canvas.zoom(zoomFactor);
+      }
+
       /**
        * Open diagram in our viewer instance.
        *
@@ -112,6 +189,19 @@
 
         titleNode.style.display = title ? 'block' : 'none';
 
+        if (options.size != null) {
+
+          if (!footer) {
+            document.getElementsByClassName('footer')[0].style.display = 'none';
+            document.getElementsByClassName('bjs-powered-by')[0].style.display = 'none';
+          }
+
+          return {
+            width: options.size.imageWidth,
+            height: options.size.imageHeight,
+            diagramHeight: options.size.imageHeight
+          }
+        }
         const width = Math.max(viewbox.inner.width, minDimensions.width);
         const diagramHeight = Math.max(
           viewbox.inner.height + (footer ? 90 : 0),

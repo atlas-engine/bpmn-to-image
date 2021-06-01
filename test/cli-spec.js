@@ -198,6 +198,57 @@ describe('cli', function() {
       });
 
     });
+
+    describe('with zoom on specific element', function () {
+
+      it('explicit cli opt-out', async function() {
+
+        // when
+        await runExport([
+          `complex.bpmn${pathDelimiter}zoomed-to-elemnent.png`
+        ], {
+          zoomToElement: 'sid-BFDE4B6A-89F4-415B-8A22-7BA82C441A65'
+        });
+
+        // then
+        expectExists('zoomed-to-elemnent.png', true);
+      });
+    })
+
+    describe('with zoom on diagram', function () {
+
+      it('explicit cli opt-out', async function() {
+
+        // when
+        await runExport([
+          `complex.bpmn${pathDelimiter}zoomed-diagram.png`
+        ], {
+          zoom: 3
+        });
+
+        // then
+        expectExists('zoomed-diagram.png', true);
+      });
+    })
+
+    describe('with custom image size', function () {
+
+      it('explicit cli opt-out', async function() {
+
+        // when
+        await runExport([
+          `diagram.bpmn${pathDelimiter}sized-diagram.png`
+        ], {
+          size: {
+            width: 200,
+            height: 200
+          }
+        });
+
+        // then
+        expectExists('sized-diagram.png', true);
+      });
+    })
   });
 
 });
@@ -212,7 +263,10 @@ async function runExport(conversions, options = {}) {
     minDimensions,
     title,
     noFooter,
-    scale
+    scale,
+    zoomToElement,
+    zoom,
+    size
   } = options;
 
   if (noFooter) {
@@ -251,6 +305,27 @@ async function runExport(conversions, options = {}) {
         `--title=${title}`
       ];
     }
+  }
+
+  if (typeof zoomToElement === 'string') {
+    args = [
+      ...args,
+      `--zoom-to-element=${zoomToElement}`
+    ]
+  }
+
+  if (typeof zoom !== 'undefined') {
+    args = [
+      ...args,
+      `--zoom=${zoom}`
+    ]
+  }
+
+  if (size) {
+    args = [
+      ...args,
+      `--size=${size.width}x${size.height}`
+    ]
   }
 
   await execa('../cli.js', args, {

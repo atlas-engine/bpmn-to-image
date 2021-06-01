@@ -3,7 +3,6 @@ const fs = require('fs');
 
 const {
   basename,
-  resolve,
   relative
 } = require('path');
 
@@ -20,7 +19,10 @@ async function printDiagram(page, options) {
     minDimensions,
     footer,
     title = true,
-    deviceScaleFactor
+    deviceScaleFactor,
+    zoomToElement,
+    diagramZoom,
+    size
   } = options;
 
   const diagramXML = readFileSync(input, 'utf8');
@@ -48,16 +50,29 @@ async function printDiagram(page, options) {
     minDimensions,
     title: diagramTitle,
     viewerScript,
-    footer
-  });;
+    footer,
+    size
+  });
 
   page.setViewport({
-    width: Math.round(desiredViewport.width),
-    height: Math.round(desiredViewport.height),
+    width: size != null ? desiredViewport.width : Math.round(desiredViewport.width),
+    height: size != null ? desiredViewport.height : Math.round(desiredViewport.height),
     deviceScaleFactor: deviceScaleFactor
   });
 
   await page.evaluate(() => resize());
+
+  if (zoomToElement != null) {
+    await page.evaluate((zoomToElement) => {
+      zoomToElementById(zoomToElement);
+    }, zoomToElement);
+  }
+
+  if (diagramZoom !== 1) {
+    await page.evaluate((diagramZoom) => {
+      zoomDiagram(diagramZoom);
+    }, diagramZoom)
+  }
 
   for (const output of outputs) {
 
@@ -90,7 +105,6 @@ async function printDiagram(page, options) {
       console.error(`Unknown output file format: ${output}`);
     }
   }
-
 }
 
 
@@ -111,13 +125,6 @@ async function withPage(fn) {
 
 async function convertAll(conversions, options={}) {
 
-  const {
-    minDimensions,
-    footer,
-    title,
-    deviceScaleFactor
-  } = options;
-
   await withPage(async function(page) {
 
     for (const conversion of conversions) {
@@ -130,10 +137,7 @@ async function convertAll(conversions, options={}) {
       await printDiagram(page, {
         input,
         outputs,
-        minDimensions,
-        title,
-        footer,
-        deviceScaleFactor
+        ...options
       });
     }
 

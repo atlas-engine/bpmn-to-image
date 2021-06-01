@@ -34,6 +34,12 @@ const cli = meow(`
 
     --scale                        Scale factor for images (1)
 
+    --zoom-to-element              Zoom to an Element by its ID
+
+    --zoom                         Diagram zoom factor
+
+    --size                         The size of the image in pixels (<width>x<height>)
+
   Examples
 
     # export to diagram.png
@@ -44,6 +50,15 @@ const cli = meow(`
 
     # export with minimum size of 500x300 pixels
     $ bpmn-to-image --min-dimensions=500x300 diagram.bpmn${pathDelimiter}png
+
+    # export with zoom on Task_0l0q2kz
+    $ bpmn-to-image --zoom-to-element=Task_0l0q2kz diagram.bpmn${pathDelimiter}png
+
+    # export with 350% zoom on Task_0l0q2kz
+    $ bpmn-to-image --zoom-to-element=Task_0l0q2kz diagram.bpmn${pathDelimiter}png --zoom 3.5
+
+    # export with an image size of 200x200
+    $ bpmn-to-image diagram.bpmn${pathDelimiter}png --size 200x200
 `, {
   flags: {
     minDimensions: {
@@ -58,6 +73,17 @@ const cli = meow(`
     },
     scale: {
       default: 1
+    },
+    zoomToElement: {
+      type: 'string',
+      default: undefined
+    },
+    zoom: {
+      default: 1
+    },
+    size: {
+      type: 'string',
+      default: '',
     }
   }
 });
@@ -105,15 +131,28 @@ const title = cli.flags.title === false ? false : cli.flags.title;
 
 const scale = cli.flags.scale !== undefined ? cli.flags.scale : 1;
 
+const zoomToElement = cli.flags.zoomToElement?.trim() !== '' ? cli.flags.zoomToElement : undefined;
+
+const zoom = cli.flags.zoom === true ? 1 : cli.flags.zoom;
+
 const [ width, height ] = cli.flags.minDimensions.split('x').map(function(d) {
   return parseInt(d, 10);
 });
+
+const [ imageWidth, imageHeight ] = cli.flags.size.split('x').map(function(d) {
+  return parseInt(d, 10);
+});
+
+const size = (imageWidth == null || isNaN(imageWidth)) || (imageHeight == null || isNaN(imageHeight)) ? undefined : { imageWidth, imageHeight };
 
 convertAll(conversions, {
   minDimensions: { width, height },
   title,
   footer,
-  deviceScaleFactor: scale
+  deviceScaleFactor: scale,
+  zoomToElement,
+  diagramZoom: zoom,
+  size: size
 }).catch(function(e) {
   console.error('failed to export diagram(s)');
   console.error(e);

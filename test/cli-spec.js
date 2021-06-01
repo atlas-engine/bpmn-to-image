@@ -230,6 +230,25 @@ describe('cli', function() {
         expectExists('zoomed-diagram.png', true);
       });
     })
+
+    describe('with custom image size', function () {
+
+      it('explicit cli opt-out', async function() {
+
+        // when
+        await runExport([
+          `diagram.bpmn${pathDelimiter}sized-diagram.png`
+        ], {
+          size: {
+            width: 200,
+            height: 200
+          }
+        });
+
+        // then
+        expectExists('sized-diagram.png', true);
+      });
+    })
   });
 
 });
@@ -246,7 +265,8 @@ async function runExport(conversions, options = {}) {
     noFooter,
     scale,
     zoomToElement,
-    zoom
+    zoom,
+    size
   } = options;
 
   if (noFooter) {
@@ -300,6 +320,14 @@ async function runExport(conversions, options = {}) {
       `--zoom=${zoom}`
     ]
   }
+
+  if (size) {
+    args = [
+      ...args,
+      `--size=${size.width}x${size.height}`
+    ]
+  }
+
   await execa('../cli.js', args, {
     stdout: 'inherit',
     stderr: 'inherit',

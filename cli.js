@@ -56,6 +56,9 @@ const cli = meow(`
 
     # export with 350% zoom on Task_0l0q2kz
     $ bpmn-to-image --zoom-to-element=Task_0l0q2kz diagram.bpmn${pathDelimiter}png --zoom 3.5
+
+    # export with an image size of 200x200
+    $ bpmn-to-image diagram.bpmn${pathDelimiter}png --size 200x200
 `, {
   flags: {
     minDimensions: {

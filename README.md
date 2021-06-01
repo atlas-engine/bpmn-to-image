@@ -32,6 +32,12 @@ $ bpmn-to-image --help
 
     --scale                        Scale factor for images (1)
 
+    --zoom-to-element              Zoom to an Element by its ID
+
+    --zoom                         Diagram zoom factor
+
+    --size                         The size of the image in pixels (<width>x<height>)
+
   Examples
 
     # export to diagram.png
@@ -42,6 +48,15 @@ $ bpmn-to-image --help
 
     # export with minimum size of 500x300 pixels
     $ bpmn-to-image --min-dimensions=500x300 diagram.bpmn:png
+
+    # export with zoom on Task_0l0q2kz
+    $ bpmn-to-image --zoom-to-element=Task_0l0q2kz diagram.bpmn:png
+
+    # export with 350% zoom on Task_0l0q2kz
+    $ bpmn-to-image --zoom-to-element=Task_0l0q2kz diagram.bpmn:png --zoom 3.5
+
+    # export with an image size of 200x200
+    $ bpmn-to-image diagram.bpmn:png --size 200x200
 ```
 
 

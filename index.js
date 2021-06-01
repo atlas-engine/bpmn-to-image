@@ -21,7 +21,8 @@ async function printDiagram(page, options) {
     title = true,
     deviceScaleFactor,
     zoomToElement,
-    diagramZoom
+    diagramZoom,
+    size
   } = options;
 
   const diagramXML = readFileSync(input, 'utf8');
@@ -49,12 +50,13 @@ async function printDiagram(page, options) {
     minDimensions,
     title: diagramTitle,
     viewerScript,
-    footer
+    footer,
+    size
   });
 
   page.setViewport({
-    width: Math.round(desiredViewport.width),
-    height: Math.round(desiredViewport.height),
+    width: size != null ? desiredViewport.width : Math.round(desiredViewport.width),
+    height: size != null ? desiredViewport.height : Math.round(desiredViewport.height),
     deviceScaleFactor: deviceScaleFactor
   });
 

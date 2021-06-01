@@ -38,6 +38,8 @@ const cli = meow(`
 
     --zoom                         Diagram zoom factor
 
+    --size                         The size of the image in pixels (<width>x<height>)
+
   Examples
 
     # export to diagram.png
@@ -75,6 +77,10 @@ const cli = meow(`
     },
     zoom: {
       default: 1
+    },
+    size: {
+      type: 'string',
+      default: '',
     }
   }
 });
@@ -130,13 +136,20 @@ const [ width, height ] = cli.flags.minDimensions.split('x').map(function(d) {
   return parseInt(d, 10);
 });
 
+const [ imageWidth, imageHeight ] = cli.flags.size.split('x').map(function(d) {
+  return parseInt(d, 10);
+});
+
+const size = (imageWidth == null || isNaN(imageWidth)) || (imageHeight == null || isNaN(imageHeight)) ? undefined : { imageWidth, imageHeight };
+
 convertAll(conversions, {
   minDimensions: { width, height },
   title,
   footer,
   deviceScaleFactor: scale,
   zoomToElement,
-  diagramZoom: zoom
+  diagramZoom: zoom,
+  size: size
 }).catch(function(e) {
   console.error('failed to export diagram(s)');
   console.error(e);

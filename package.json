@@ -1,8 +1,11 @@
 {
-  "name": "bpmn-to-image",
-  "version": "0.6.0",
-  "description": "Convert a BPMN 2.0 diagrams to PDF, SVG or PNG images",
+  "name": "@atlas-engine-contrib/pc-bpmn-to-image",
+  "version": "1.0.0",
+  "description": "Modified Package to Convert a BPMN diagram to PDF, SVG or IMG files with zoom",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "bin": {
     "bpmn-to-image": "./cli.js"
   },
@@ -25,8 +28,6 @@
     "png",
     "svg"
   ],
-  "author": "Nico Rehwaldt <https://github.com/nikku>",
-  "contributors": ["Alexander Kasten <https://github.com/alexanderkasten>"],
   "license": "MIT",
   "dependencies": {
     "bpmn-js": "^8.2.0",
@@ -40,5 +41,11 @@
     "execa": "^0.10.0",
     "mocha": "^8.3.0",
     "npm-run-all": "^4.1.2"
-  }
+  },
+  "author": "Nico Rehwaldt <https://github.com/nikku>",
+  "contributors": ["Alexander Kasten <https://github.com/alexanderkasten>"],
+  "bugs": {
+    "url": "https://github.com/atlas-engine/bpmn-to-image/issues"
+  },
+  "homepage": "https://github.com/atlas-engine/bpmn-to-image#readme"
 }

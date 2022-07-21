@@ -1,6 +1,6 @@
 {
   "name": "@atlas-engine-contrib/pc-bpmn-to-image",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Modified Package to Convert a BPMN diagram to PDF, SVG or IMG files with zoom",
   "main": "index.js",
   "directories": {

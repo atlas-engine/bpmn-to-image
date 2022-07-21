@@ -2,3 +2,4 @@ node_modules
 test/*.png
 test/*.pdf
 test/*.svg
+.DS_Store

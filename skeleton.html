@@ -189,19 +189,19 @@
 
         titleNode.style.display = title ? 'block' : 'none';
 
+        if (!footer) {
+          document.getElementsByClassName('footer')[0].style.display = 'none';
+          document.getElementsByClassName('bjs-powered-by')[0].style.display = 'none';
+        }
+
         if (options.size != null) {
-
-          if (!footer) {
-            document.getElementsByClassName('footer')[0].style.display = 'none';
-            document.getElementsByClassName('bjs-powered-by')[0].style.display = 'none';
-          }
-
           return {
             width: options.size.imageWidth,
             height: options.size.imageHeight,
             diagramHeight: options.size.imageHeight
           }
         }
+
         const width = Math.max(viewbox.inner.width, minDimensions.width);
         const diagramHeight = Math.max(
           viewbox.inner.height + (footer ? 90 : 0),
